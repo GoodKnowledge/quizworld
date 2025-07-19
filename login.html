@@ -11,16 +11,16 @@
 <body class="bg-gray-100">
   <div class="flex items-center justify-center min-h-screen">
     <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-      <h2 class="text-2xl font-bold mb-6 text-center">Login to QuizWorld</h2>
+      <h2 class="text-2xl font-bold mb-6 text-center" id="formTitle">Login to QuizWorld</h2>
 
       <input type="email" id="email" placeholder="Email" class="w-full p-2 border mb-4 rounded" />
       <input type="password" id="password" placeholder="Password" class="w-full p-2 border mb-4 rounded" />
 
-      <button onclick="login()" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Login</button>
+      <button onclick="handleAuth()" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700" id="authButton">Login</button>
 
-      <p class="text-center mt-4 text-sm">
+      <p class="text-center mt-4 text-sm" id="toggleText">
         Don't have an account?
-        <a href="#" onclick="toggleRegister()" class="text-blue-500 underline">Register</a>
+        <a href="#" onclick="toggleMode()" class="text-blue-500 underline">Register</a>
       </p>
     </div>
   </div>
@@ -33,24 +33,46 @@
       projectId: "quizworld-21c0a",
       storageBucket: "quizworld-21c0a.appspot.com",
       messagingSenderId: "796793766928",
-      appId: "1:796793766928:web:dd4f06e124f90b47fe3695",
+      appId: "1:796793766928:web:dd4f06e124f90b47fe3695"
     };
 
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    function login() {
+    let isLogin = true;
+
+    function toggleMode() {
+      isLogin = !isLogin;
+      document.getElementById('formTitle').textContent = isLogin ? "Login to QuizWorld" : "Register on QuizWorld";
+      document.getElementById('authButton').textContent = isLogin ? "Login" : "Register";
+      document.getElementById('toggleText').innerHTML = isLogin
+        ? `Don't have an account? <a href="#" onclick="toggleMode()" class="text-blue-500 underline">Register</a>`
+        : `Already have an account? <a href="#" onclick="toggleMode()" class="text-blue-500 underline">Login</a>`;
+    }
+
+    function handleAuth() {
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
 
-      auth.signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-          alert("✅ Login successful!");
-          window.location.href = "index.html";
-        })
-        .catch((error) => {
-          alert("❌ Error: " + error.message);
-        });
+      if (isLogin) {
+        auth.signInWithEmailAndPassword(email, password)
+          .then(() => {
+            alert("✅ Login successful!");
+            window.location.href = "index.html";
+          })
+          .catch((error) => {
+            alert("❌ Login failed: " + error.message);
+          });
+      } else {
+        auth.createUserWithEmailAndPassword(email, password)
+          .then(() => {
+            alert("✅ Registration successful! You can now log in.");
+            toggleMode(); // Go back to login mode after successful registration
+          })
+          .catch((error) => {
+            alert("❌ Registration failed: " + error.message);
+          });
+      }
     }
   </script>
 </body>
