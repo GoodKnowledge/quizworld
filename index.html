@@ -33,75 +33,36 @@
       <h3 class="text-lg font-semibold">📢 Job Hiring (Govt & Private)</h3>
       <p>Latest recruitment notices for government and private sectors...</p>
     </div>
-	<div id="adminPanel" style="display: none;" class="p-4 bg-yellow-100 border rounded mt-6 max-w-3xl mx-auto">
-    <h3 class="text-lg font-bold mb-2">Admin Panel</h3>
-    <p>You are logged in as <strong>Admin</strong>. You can add/update questions from here.</p>
-    <!-- Admin controls like dropdowns, forms etc will go here -->
-	<select id="questionCategory" class="border p-2 my-2">
-        <option value="currentAffairsContent">Current Affairs</option>
-        <option value="historyContent">History</option>
-        <option value="geographyContent">Geography</option>
-        <option value="scienceContent">General Science</option>
-        <option value="aptitudeContent">Aptitude</option>
-        <option value="reasoningContent">Reasoning</option>
-      </select>
-      <input id="questionText" placeholder="Enter your question" class="border p-2 block my-2 w-full" />
-      <button onclick="addQuestionToFirestore()" class="bg-blue-600 text-white p-2 rounded">Add Question</button>
-    </div>
+  </section>
+  
+  <!-- Hidden Admin Section -->
+  <section id="adminPanel" class="hidden max-w-4xl mx-auto bg-white border mt-10 p-6 rounded shadow">
+    <h2 class="text-xl font-bold text-red-600 mb-4">Admin Panel</h2>
+    <p>This panel is visible only to admin only.</p>
+    <!-- You can add more admin-only controls here -->
   </section>
 
 </main>
 
-	<script>
-    window.onload = () => {
-      const isAdmin = localStorage.getItem('isAdmin') === 'true';
-      if (isAdmin) {
-        document.getElementById('adminPanel').style.display = 'block';
-      }
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCl5Ws00zsGXEpQfTpV6Awb0lkyr363pwc",
+      authDomain: "quizworld-21c0a.firebaseapp.com",
+      projectId: "quizworld-21c0a",
+      storageBucket: "quizworld-21c0a.appspot.com",
+      messagingSenderId: "796793766928",
+      appId: "1:796793766928:web:dd4f06e124f90b47fe3695"
     };
-	
-	function addQuestionToFirestore() {
-      const categoryId = document.getElementById('questionCategory').value;
-      const question = document.getElementById('questionText').value;
-      if (!question) return;
-      db.collection("questions").add({ category: categoryId, text: question, timestamp: Date.now() })
-        .then(() => {
-          document.getElementById('questionText').value = '';
-          loadQuestions();
-        })
-        .catch(error => console.error("Error adding question: ", error));
-    }
 
-    function loadQuestions() {
-      db.collection("questions").orderBy("timestamp").get().then(snapshot => {
-        const sections = {
-          currentAffairsContent: [],
-          historyContent: [],
-          geographyContent: [],
-          scienceContent: [],
-          aptitudeContent: [],
-          reasoningContent: []
-        };
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          if (sections[data.category]) {
-            sections[data.category].push(`<p class='my-1 flex justify-between items-center'>• ${data.text} <button class='text-sm text-red-600 ml-2' onclick="deleteQuestion('${doc.id}')">Delete</button></p>`);
-          }
-        });
-        for (const id in sections) {
-          const container = document.getElementById(id);
-          container.innerHTML = sections[id].join('');
-        }
-      });
-    }
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
 
-    function deleteQuestion(id) {
-      db.collection("questions").doc(id).delete()
-        .then(() => {
-          loadQuestions();
-        })
-        .catch(error => console.error("Error deleting question: ", error));
-    }
+    auth.onAuthStateChanged(user => {
+      if (user && user.email === "thekingraj640@gmail.com") {
+        document.getElementById("adminPanel").classList.remove("hidden");
+      }
+    });
   </script>
+  
 </body>
 </html>
