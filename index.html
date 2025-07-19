@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Index</title>
+  <title>QuizWorld</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50">
@@ -33,8 +33,22 @@
       <h3 class="text-lg font-semibold">📢 Job Hiring (Govt & Private)</h3>
       <p>Latest recruitment notices for government and private sectors...</p>
     </div>
+	<div id="adminPanel" style="display: none;" class="p-4 bg-yellow-100 border rounded mt-6 max-w-3xl mx-auto">
+    <h3 class="text-lg font-bold mb-2">Admin Panel</h3>
+    <p>You are logged in as <strong>Admin</strong>. You can add/update questions from here.</p>
+    <!-- Admin controls like dropdowns, forms etc will go here -->
+    </div>
   </section>
 
 </main>
+
+	<script>
+    window.onload = () => {
+      const isAdmin = localStorage.getItem('isAdmin') === 'true';
+      if (isAdmin) {
+        document.getElementById('adminPanel').style.display = 'block';
+      }
+    };
+  </script>
 </body>
 </html>
