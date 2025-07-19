@@ -1,237 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quiz Platform</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuizWorld</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
 </head>
-<body class="bg-gray-50 font-sans">
-  <header class="bg-blue-800 text-white p-4 flex justify-between items-center">
-    <h1 class="text-xl font-bold">Quiz Platform</h1>
-    <nav class="flex space-x-4">
-      <a href="#" onclick="showSection('homeSection')" class="hover:underline">Home</a>
-      <a href="#" onclick="showSection('currentAffairsSection')" class="hover:underline">Current Affairs</a>
-      <a href="#" onclick="showSection('historySection')" class="hover:underline">History</a>
-      <a href="#" onclick="showSection('geographySection')" class="hover:underline">Geography</a>
-      <a href="#" onclick="showSection('scienceSection')" class="hover:underline">General Science</a>
-      <a href="#" onclick="showSection('aptitudeSection')" class="hover:underline">Aptitude</a>
-      <a href="#" onclick="showSection('reasoningSection')" class="hover:underline">Reasoning</a>
-      <a href="#" onclick="toggleProfileMenu()" class="hover:underline">Profile</a>
+<body class="bg-gray-50">
+  <!-- Header Navigation -->
+  <header class="bg-white shadow p-4 flex justify-between items-center">
+    <h1 class="text-xl font-bold">QuizWorld</h1>
+    <nav class="space-x-4">
+      <a href="#home" class="text-blue-600 hover:underline">Home</a>
+      <a href="#currentAffairs" class="text-blue-600 hover:underline">Current Affairs</a>
+      <a href="#history" class="text-blue-600 hover:underline">History</a>
+      <a href="#geography" class="text-blue-600 hover:underline">Geography</a>
+      <a href="#science" class="text-blue-600 hover:underline">General Science</a>
+      <a href="#aptitude" class="text-blue-600 hover:underline">Aptitude</a>
+      <a href="#reasoning" class="text-blue-600 hover:underline">Reasoning</a>
+      <a href="#" onclick="toggleProfilePanel()" class="text-blue-600 hover:underline">Profile</a>
     </nav>
   </header>
 
-  <!-- Profile Slide Panel -->
-  <div id="profileMenu" class="fixed top-0 right-0 w-64 h-full bg-white shadow-lg p-4 hidden z-50">
-    <button onclick="toggleProfileMenu()" class="text-red-500 float-right">X</button>
-    <div id="guestMenu">
-      <button onclick="showSection('loginSection')" class="w-full my-2 p-2 bg-blue-500 text-white rounded">Login</button>
-      <button onclick="showSection('loginSection')" class="w-full my-2 p-2 bg-green-500 text-white rounded">Register</button>
+  <!-- Profile Panel -->
+  <aside id="profilePanel" class="fixed top-0 right-0 h-full w-64 bg-white shadow-lg transform translate-x-full transition-transform duration-300 p-4 z-50">
+    <div id="guestOptions">
+      <button onclick="loginView()" class="w-full mb-2 bg-blue-500 text-white p-2 rounded">Login</button>
+      <button onclick="registerView()" class="w-full bg-green-500 text-white p-2 rounded">Register</button>
     </div>
-    <div id="userMenu" class="hidden">
-      <button class="w-full my-2 p-2 bg-gray-200 rounded">Your Profile</button>
-      <button class="w-full my-2 p-2 bg-gray-200 rounded">Scorecard</button>
-      <button onclick="logout()" class="w-full my-2 p-2 bg-red-500 text-white rounded">Logout</button>
+    <div id="userOptions" class="hidden">
+      <p id="userEmail" class="font-medium text-gray-800 mb-2"></p>
+      <button class="w-full bg-gray-200 p-2 rounded mb-2">Your Profile</button>
+      <button class="w-full bg-gray-200 p-2 rounded mb-2">Scorecard</button>
+      <button onclick="logout()" class="w-full bg-red-500 text-white p-2 rounded">Logout</button>
     </div>
-  </div>
+  </aside>
 
-  <!-- Section Container -->
-  <main class="p-4">
-    <section id="homeSection">
-      <h2 class="text-2xl font-bold">Welcome to the Quiz Platform</h2>
+  <!-- Sections -->
+  <main class="p-6">
+    <section id="home">
+      <h2 class="text-2xl font-semibold">Home - Daily News & Job Hiring</h2>
       <div class="mt-4">
-        <h3 class="text-xl font-semibold">Daily News</h3>
-        <ul class="list-disc pl-5">
-          <li>India signs new space tech deal with ISRO and startups</li>
-          <li>Finance Ministry releases new GST policy update</li>
-          <li>New education reforms announced by UGC</li>
-        </ul>
+        <h3 class="text-lg font-semibold">📰 Daily News</h3>
+        <p>Latest updates and current events...</p>
       </div>
-      <div class="mt-6">
-        <h3 class="text-xl font-semibold">Govt & Private Job Recruitments</h3>
-        <ul class="list-disc pl-5">
-          <li>SSC CGL 2025 Notification Out - Apply before Aug 15</li>
-          <li>TCS hiring freshers for IT roles - Apply now</li>
-          <li>Indian Railways Apprentice Recruitment - Last date Aug 30</li>
-        </ul>
+      <div class="mt-4">
+        <h3 class="text-lg font-semibold">📢 Job Hiring (Govt & Private)</h3>
+        <p>Latest recruitment notices for government and private sectors...</p>
       </div>
     </section>
-
-    <section id="currentAffairsSection" class="hidden">
-      <h2 class="text-xl font-bold">Current Affairs</h2>
-      <div id="currentAffairsContent"></div>
+    <section id="currentAffairs" class="mt-10">
+      <h2 class="text-2xl font-semibold">Current Affairs Quiz</h2>
+      <!-- Questions will be populated here -->
     </section>
-
-    <section id="historySection" class="hidden">
-      <h2 class="text-xl font-bold">History</h2>
-      <div id="historyContent"></div>
+    <section id="history" class="mt-10">
+      <h2 class="text-2xl font-semibold">History Quiz</h2>
     </section>
-
-    <section id="geographySection" class="hidden">
-      <h2 class="text-xl font-bold">Geography</h2>
-      <div id="geographyContent"></div>
+    <section id="geography" class="mt-10">
+      <h2 class="text-2xl font-semibold">Geography Quiz</h2>
     </section>
-
-    <section id="scienceSection" class="hidden">
-      <h2 class="text-xl font-bold">General Science</h2>
-      <div id="scienceContent"></div>
+    <section id="science" class="mt-10">
+      <h2 class="text-2xl font-semibold">General Science Quiz</h2>
     </section>
-
-    <section id="aptitudeSection" class="hidden">
-      <h2 class="text-xl font-bold">Aptitude</h2>
-      <div id="aptitudeContent"></div>
+    <section id="aptitude" class="mt-10">
+      <h2 class="text-2xl font-semibold">Aptitude Quiz</h2>
     </section>
-
-    <section id="reasoningSection" class="hidden">
-      <h2 class="text-xl font-bold">Reasoning</h2>
-      <div id="reasoningContent"></div>
-    </section>
-
-    <section id="loginSection" class="hidden">
-      <h2 class="text-2xl font-bold">Login or Register</h2>
-      <input id="email" placeholder="Email" class="border p-2 block my-2" />
-      <input id="password" type="password" placeholder="Password" class="border p-2 block my-2" />
-      <button onclick="login()" class="bg-blue-500 text-white p-2 rounded">Login</button>
-      <button onclick="register()" class="bg-green-500 text-white p-2 rounded ml-2">Register</button>
-    </section>
-
-    <!-- Admin Panel Dropdown (for example use) -->
-    <section id="adminPanel" class="hidden">
-      <h2 class="text-xl font-bold">Admin Panel</h2>
-      <select id="questionCategory" class="border p-2 my-2">
-        <option value="currentAffairsContent">Current Affairs</option>
-        <option value="historyContent">History</option>
-        <option value="geographyContent">Geography</option>
-        <option value="scienceContent">General Science</option>
-        <option value="aptitudeContent">Aptitude</option>
-        <option value="reasoningContent">Reasoning</option>
-      </select>
-      <input id="questionText" placeholder="Enter your question" class="border p-2 block my-2 w-full" />
-      <button onclick="addQuestionToFirestore()" class="bg-blue-600 text-white p-2 rounded">Add Question</button>
+    <section id="reasoning" class="mt-10">
+      <h2 class="text-2xl font-semibold">Reasoning Quiz</h2>
     </section>
   </main>
 
   <script>
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
+      apiKey: "AIzaSyCsJ5M8MEtZa2YSUi2eV8_3MHYE1n5EhsI",
+      authDomain: "quizzcode-31fd1.firebaseapp.com",
+      projectId: "quizzcode-31fd1",
+      storageBucket: "quizzcode-31fd1.appspot.com",
+      messagingSenderId: "476338587124",
+      appId: "1:476338587124:web:1b0b9431f8dcf9458025a1",
+      measurementId: "G-F84ZFTC720"
     };
+
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
-    const db = firebase.firestore();
 
-    function showSection(id) {
-      document.querySelectorAll("main section").forEach(section => section.classList.add("hidden"));
-      document.getElementById(id).classList.remove("hidden");
-      toggleProfileMenu(false);
+    function toggleProfilePanel() {
+      const panel = document.getElementById("profilePanel");
+      panel.classList.toggle("translate-x-full");
     }
 
-    function toggleProfileMenu(forceClose = null) {
-      const menu = document.getElementById('profileMenu');
-      if (forceClose !== null) {
-        menu.classList.toggle('hidden', !forceClose);
-      } else {
-        menu.classList.toggle('hidden');
-      }
+    function loginView() {
+      alert("Redirect to login page or show inline login form.");
     }
 
-    function login() {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      auth.signInWithEmailAndPassword(email, password)
-        .then(() => {
-          alert("Login successful");
-          showSection('homeSection');
-        })
-        .catch(error => alert(error.message));
-    }
-
-    function register() {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      auth.createUserWithEmailAndPassword(email, password)
-        .then(() => {
-          alert("Registered successfully");
-          showSection('homeSection');
-        })
-        .catch(error => alert(error.message));
+    function registerView() {
+      alert("Redirect to register page or show inline register form.");
     }
 
     function logout() {
       auth.signOut().then(() => {
-        alert("Logged out");
-        showSection('homeSection');
+        document.getElementById("guestOptions").classList.remove("hidden");
+        document.getElementById("userOptions").classList.add("hidden");
+        toggleProfilePanel();
       });
     }
 
     auth.onAuthStateChanged(user => {
-      const guestMenu = document.getElementById('guestMenu');
-      const userMenu = document.getElementById('userMenu');
       if (user) {
-        guestMenu.classList.add('hidden');
-        userMenu.classList.remove('hidden');
-        if (user.email === 'thekingraj640@gmail.com') {
-          document.getElementById('adminPanel').classList.remove('hidden');
-        } else {
-          document.getElementById('adminPanel').classList.add('hidden');
-        }
-        loadQuestions();
+        document.getElementById("guestOptions").classList.add("hidden");
+        document.getElementById("userOptions").classList.remove("hidden");
+        document.getElementById("userEmail").innerText = "Welcome: " + user.email;
       } else {
-        guestMenu.classList.remove('hidden');
-        userMenu.classList.add('hidden');
-        document.getElementById('adminPanel').classList.add('hidden');
+        document.getElementById("guestOptions").classList.remove("hidden");
+        document.getElementById("userOptions").classList.add("hidden");
       }
     });
-
-    function addQuestionToFirestore() {
-      const categoryId = document.getElementById('questionCategory').value;
-      const question = document.getElementById('questionText').value;
-      if (!question) return;
-      db.collection("questions").add({ category: categoryId, text: question, timestamp: Date.now() })
-        .then(() => {
-          document.getElementById('questionText').value = '';
-          loadQuestions();
-        })
-        .catch(error => console.error("Error adding question: ", error));
-    }
-
-    function loadQuestions() {
-      db.collection("questions").orderBy("timestamp").get().then(snapshot => {
-        const sections = {
-          currentAffairsContent: [],
-          historyContent: [],
-          geographyContent: [],
-          scienceContent: [],
-          aptitudeContent: [],
-          reasoningContent: []
-        };
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          if (sections[data.category]) {
-            sections[data.category].push(`<p class='my-1 flex justify-between items-center'>• ${data.text} <button class='text-sm text-red-600 ml-2' onclick="deleteQuestion('${doc.id}')">Delete</button></p>`);
-          }
-        });
-        for (const id in sections) {
-          const container = document.getElementById(id);
-          container.innerHTML = sections[id].join('');
-        }
-      });
-    }
-
-    function deleteQuestion(id) {
-      db.collection("questions").doc(id).delete()
-        .then(() => {
-          loadQuestions();
-        })
-        .catch(error => console.error("Error deleting question: ", error));
-    }
   </script>
 </body>
 </html>
