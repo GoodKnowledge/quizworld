@@ -56,8 +56,14 @@
 
       if (isLogin) {
         auth.signInWithEmailAndPassword(email, password)
-          .then(() => {
-            alert("✅ Login successful!");
+          .then((userCredential) => {
+            const user = userCredential.user;
+            localStorage.setItem('userEmail', user.email);
+            if (user.email === "thekingraj640@gmail.com") {
+              localStorage.setItem('isAdmin', 'true');
+            } else {
+              localStorage.setItem('isAdmin', 'false');
+            }
             window.location.href = "index.html";
           })
           .catch((error) => {
@@ -67,7 +73,7 @@
         auth.createUserWithEmailAndPassword(email, password)
           .then(() => {
             alert("✅ Registration successful! You can now log in.");
-            toggleMode(); // Go back to login mode after successful registration
+            toggleMode();
           })
           .catch((error) => {
             alert("❌ Registration failed: " + error.message);
