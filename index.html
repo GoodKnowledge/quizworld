@@ -28,8 +28,8 @@
   <!-- Profile Panel -->
   <aside id="profilePanel" class="fixed top-0 right-0 h-full w-64 bg-white shadow-lg transform translate-x-full transition-transform duration-300 p-4 z-50">
     <div id="guestOptions">
-      <button onclick="loginView()" class="w-full mb-2 bg-blue-500 text-white p-2 rounded">Login</button>
-      <button onclick="registerView()" class="w-full bg-green-500 text-white p-2 rounded">Register</button>
+      <a href="#loginForm" class="w-full block mb-2 bg-blue-500 text-white text-center p-2 rounded">Login</a>
+      <a href="#registerForm" class="w-full block bg-green-500 text-white text-center p-2 rounded">Register</a>
     </div>
     <div id="userOptions" class="hidden">
       <p id="userEmail" class="font-medium text-gray-800 mb-2"></p>
@@ -38,6 +38,21 @@
       <button onclick="logout()" class="w-full bg-red-500 text-white p-2 rounded">Logout</button>
     </div>
   </aside>
+
+  <!-- Login and Register Forms -->
+  <section id="loginForm" class="p-6 max-w-md mx-auto hidden">
+    <h2 class="text-xl font-semibold mb-4">Login</h2>
+    <input id="email" type="email" placeholder="Email" class="border p-2 w-full mb-2">
+    <input id="password" type="password" placeholder="Password" class="border p-2 w-full mb-2">
+    <button onclick="login()" class="bg-blue-500 text-white p-2 w-full rounded">Login</button>
+  </section>
+
+  <section id="registerForm" class="p-6 max-w-md mx-auto hidden">
+    <h2 class="text-xl font-semibold mb-4">Register</h2>
+    <input id="regEmail" type="email" placeholder="Email" class="border p-2 w-full mb-2">
+    <input id="regPassword" type="password" placeholder="Password" class="border p-2 w-full mb-2">
+    <button onclick="register()" class="bg-green-500 text-white p-2 w-full rounded">Register</button>
+  </section>
 
   <!-- Sections -->
   <main class="p-6">
@@ -54,7 +69,6 @@
     </section>
     <section id="currentAffairs" class="mt-10">
       <h2 class="text-2xl font-semibold">Current Affairs Quiz</h2>
-      <!-- Questions will be populated here -->
     </section>
     <section id="history" class="mt-10">
       <h2 class="text-2xl font-semibold">History Quiz</h2>
@@ -92,18 +106,38 @@
       panel.classList.toggle("translate-x-full");
     }
 
-    function loginView() {
-      alert("Redirect to login page or show inline login form.");
+    function login() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      auth.signInWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          document.getElementById("userEmail").innerText = "Welcome: " + userCredential.user.email;
+          document.getElementById("guestOptions").classList.add("hidden");
+          document.getElementById("userOptions").classList.remove("hidden");
+          document.getElementById("loginForm").classList.add("hidden");
+        })
+        .catch(error => alert("Login failed: " + error.message));
     }
 
-    function registerView() {
-      alert("Redirect to register page or show inline register form.");
+    function register() {
+      const email = document.getElementById("regEmail").value;
+      const password = document.getElementById("regPassword").value;
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          document.getElementById("userEmail").innerText = "Welcome: " + userCredential.user.email;
+          document.getElementById("guestOptions").classList.add("hidden");
+          document.getElementById("userOptions").classList.remove("hidden");
+          document.getElementById("registerForm").classList.add("hidden");
+        })
+        .catch(error => alert("Registration failed: " + error.message));
     }
 
     function logout() {
       auth.signOut().then(() => {
         document.getElementById("guestOptions").classList.remove("hidden");
         document.getElementById("userOptions").classList.add("hidden");
+        document.getElementById("loginForm").classList.add("hidden");
+        document.getElementById("registerForm").classList.add("hidden");
         toggleProfilePanel();
       });
     }
