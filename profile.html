@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Profile - QuizWorld</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+</head>
+<body class="bg-gray-100">
+  <div class="max-w-xl mx-auto p-8 mt-10 bg-white shadow rounded">
+    <h2 class="text-2xl font-bold mb-6">User Profile</h2>
+    <p><strong>Email:</strong> <span id="userEmail">Loading...</span></p>
+    <p><strong>Scorecard:</strong> <span id="scorecard">Coming soon...</span></p>
+    <button onclick="logout()" class="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Logout</button>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCl5Ws00zsGXEpQfTpV6Awb0lkyr363pwc",
+      authDomain: "quizworld-21c0a.firebaseapp.com",
+      projectId: "quizworld-21c0a",
+      storageBucket: "quizworld-21c0a.appspot.com",
+      messagingSenderId: "796793766928",
+      appId: "1:796793766928:web:dd4f06e124f90b47fe3695"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    window.onload = () => {
+      const userEmail = localStorage.getItem('userEmail');
+      if (!userEmail) {
+        window.location.href = "login.html";
+      } else {
+        document.getElementById("userEmail").innerText = userEmail;
+      }
+    };
+
+    function logout() {
+      auth.signOut().then(() => {
+        localStorage.clear();
+        window.location.href = "login.html";
+      });
+    }
+  </script>
+</body>
+</html>
