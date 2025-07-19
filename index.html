@@ -1,157 +1,40 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QuizWorld</title>
+  <title>Index</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
 </head>
 <body class="bg-gray-50">
-  <!-- Header Navigation -->
-  <header class="bg-white shadow p-4 flex justify-between items-center">
-    <h1 class="text-xl font-bold">QuizWorld</h1>
-    <nav class="space-x-4">
-      <a href="#home" class="text-blue-600 hover:underline">Home</a>
-      <a href="#currentAffairs" class="text-blue-600 hover:underline">Current Affairs</a>
-      <a href="#history" class="text-blue-600 hover:underline">History</a>
-      <a href="#geography" class="text-blue-600 hover:underline">Geography</a>
-      <a href="#science" class="text-blue-600 hover:underline">General Science</a>
-      <a href="#aptitude" class="text-blue-600 hover:underline">Aptitude</a>
-      <a href="#reasoning" class="text-blue-600 hover:underline">Reasoning</a>
-      <a href="#" onclick="toggleProfilePanel()" class="text-blue-600 hover:underline">Profile</a>
-    </nav>
-  </header>
+<header class="bg-white shadow p-4 flex justify-between items-center">
+  <h1 class="text-xl font-bold">QuizWorld</h1>
+  <nav class="space-x-4">
+    <a href="index.html" class="text-blue-600 hover:underline">Home</a>
+    <a href="current-affairs.html" class="text-blue-600 hover:underline">Current Affairs</a>
+    <a href="history.html" class="text-blue-600 hover:underline">History</a>
+    <a href="geography.html" class="text-blue-600 hover:underline">Geography</a>
+    <a href="science.html" class="text-blue-600 hover:underline">General Science</a>
+    <a href="aptitude.html" class="text-blue-600 hover:underline">Aptitude</a>
+    <a href="reasoning.html" class="text-blue-600 hover:underline">Reasoning</a>
+    <a href="login.html" class="text-blue-600 hover:underline">Profile</a>
+  </nav>
+</header>
+<main class="p-6">
 
-  <!-- Profile Panel -->
-  <aside id="profilePanel" class="fixed top-0 right-0 h-full w-64 bg-white shadow-lg transform translate-x-full transition-transform duration-300 p-4 z-50">
-    <div id="guestOptions">
-      <a href="#loginForm" class="w-full block mb-2 bg-blue-500 text-white text-center p-2 rounded">Login</a>
-      <a href="#registerForm" class="w-full block bg-green-500 text-white text-center p-2 rounded">Register</a>
+  <section>
+    <h2 class="text-2xl font-semibold">Home - Daily News & Job Hiring</h2>
+    <div class="mt-4">
+      <h3 class="text-lg font-semibold">📰 Daily News</h3>
+      <p>Latest updates and current events...</p>
     </div>
-    <div id="userOptions" class="hidden">
-      <p id="userEmail" class="font-medium text-gray-800 mb-2"></p>
-      <button class="w-full bg-gray-200 p-2 rounded mb-2">Your Profile</button>
-      <button class="w-full bg-gray-200 p-2 rounded mb-2">Scorecard</button>
-      <button onclick="logout()" class="w-full bg-red-500 text-white p-2 rounded">Logout</button>
+    <div class="mt-4">
+      <h3 class="text-lg font-semibold">📢 Job Hiring (Govt & Private)</h3>
+      <p>Latest recruitment notices for government and private sectors...</p>
     </div>
-  </aside>
-
-  <!-- Login and Register Forms -->
-  <section id="loginForm" class="p-6 max-w-md mx-auto hidden">
-    <h2 class="text-xl font-semibold mb-4">Login</h2>
-    <input id="email" type="email" placeholder="Email" class="border p-2 w-full mb-2">
-    <input id="password" type="password" placeholder="Password" class="border p-2 w-full mb-2">
-    <button onclick="login()" class="bg-blue-500 text-white p-2 w-full rounded">Login</button>
   </section>
 
-  <section id="registerForm" class="p-6 max-w-md mx-auto hidden">
-    <h2 class="text-xl font-semibold mb-4">Register</h2>
-    <input id="regEmail" type="email" placeholder="Email" class="border p-2 w-full mb-2">
-    <input id="regPassword" type="password" placeholder="Password" class="border p-2 w-full mb-2">
-    <button onclick="register()" class="bg-green-500 text-white p-2 w-full rounded">Register</button>
-  </section>
-
-  <!-- Sections -->
-  <main class="p-6">
-    <section id="home">
-      <h2 class="text-2xl font-semibold">Home - Daily News & Job Hiring</h2>
-      <div class="mt-4">
-        <h3 class="text-lg font-semibold">📰 Daily News</h3>
-        <p>Latest updates and current events...</p>
-      </div>
-      <div class="mt-4">
-        <h3 class="text-lg font-semibold">📢 Job Hiring (Govt & Private)</h3>
-        <p>Latest recruitment notices for government and private sectors...</p>
-      </div>
-    </section>
-    <section id="currentAffairs" class="mt-10">
-      <h2 class="text-2xl font-semibold">Current Affairs Quiz</h2>
-    </section>
-    <section id="history" class="mt-10">
-      <h2 class="text-2xl font-semibold">History Quiz</h2>
-    </section>
-    <section id="geography" class="mt-10">
-      <h2 class="text-2xl font-semibold">Geography Quiz</h2>
-    </section>
-    <section id="science" class="mt-10">
-      <h2 class="text-2xl font-semibold">General Science Quiz</h2>
-    </section>
-    <section id="aptitude" class="mt-10">
-      <h2 class="text-2xl font-semibold">Aptitude Quiz</h2>
-    </section>
-    <section id="reasoning" class="mt-10">
-      <h2 class="text-2xl font-semibold">Reasoning Quiz</h2>
-    </section>
-  </main>
-
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCsJ5M8MEtZa2YSUi2eV8_3MHYE1n5EhsI",
-      authDomain: "quizzcode-31fd1.firebaseapp.com",
-      projectId: "quizzcode-31fd1",
-      storageBucket: "quizzcode-31fd1.appspot.com",
-      messagingSenderId: "476338587124",
-      appId: "1:476338587124:web:1b0b9431f8dcf9458025a1",
-      measurementId: "G-F84ZFTC720"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-
-    function toggleProfilePanel() {
-      const panel = document.getElementById("profilePanel");
-      panel.classList.toggle("translate-x-full");
-    }
-
-    function login() {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      auth.signInWithEmailAndPassword(email, password)
-        .then(userCredential => {
-          document.getElementById("userEmail").innerText = "Welcome: " + userCredential.user.email;
-          document.getElementById("guestOptions").classList.add("hidden");
-          document.getElementById("userOptions").classList.remove("hidden");
-          document.getElementById("loginForm").classList.add("hidden");
-        })
-        .catch(error => alert("Login failed: " + error.message));
-    }
-
-    function register() {
-      const email = document.getElementById("regEmail").value;
-      const password = document.getElementById("regPassword").value;
-      auth.createUserWithEmailAndPassword(email, password)
-        .then(userCredential => {
-          document.getElementById("userEmail").innerText = "Welcome: " + userCredential.user.email;
-          document.getElementById("guestOptions").classList.add("hidden");
-          document.getElementById("userOptions").classList.remove("hidden");
-          document.getElementById("registerForm").classList.add("hidden");
-        })
-        .catch(error => alert("Registration failed: " + error.message));
-    }
-
-    function logout() {
-      auth.signOut().then(() => {
-        document.getElementById("guestOptions").classList.remove("hidden");
-        document.getElementById("userOptions").classList.add("hidden");
-        document.getElementById("loginForm").classList.add("hidden");
-        document.getElementById("registerForm").classList.add("hidden");
-        toggleProfilePanel();
-      });
-    }
-
-    auth.onAuthStateChanged(user => {
-      if (user) {
-        document.getElementById("guestOptions").classList.add("hidden");
-        document.getElementById("userOptions").classList.remove("hidden");
-        document.getElementById("userEmail").innerText = "Welcome: " + user.email;
-      } else {
-        document.getElementById("guestOptions").classList.remove("hidden");
-        document.getElementById("userOptions").classList.add("hidden");
-      }
-    });
-  </script>
+</main>
 </body>
 </html>
