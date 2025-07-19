@@ -1,31 +1,71 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login - QuizWorld</title>
+  <title>Login & Profile - QuizWorld</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
 </head>
 <body class="bg-gray-100">
-  <div class="flex items-center justify-center min-h-screen">
+
+  <!-- Navigation Bar -->
+  <nav class="bg-white shadow mb-6">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+      <h1 class="text-xl font-bold">QuizWorld</h1>
+      <div id="navButtons" class="space-x-4">
+        <a href="#" id="loginBtn" class="text-blue-600 hover:underline">Login</a>
+        <a href="#" id="registerBtn" class="text-green-600 hover:underline">Register</a>
+        <button onclick="logout()" id="logoutBtn" class="hidden text-red-600 hover:underline">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Auth Form -->
+  <div id="authSection" class="flex items-center justify-center min-h-[60vh]">
     <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
       <h2 class="text-2xl font-bold mb-6 text-center" id="formTitle">Login to QuizWorld</h2>
-
-      <input type="email" id="email" placeholder="Email" class="w-full p-2 border mb-4 rounded" />
-      <input type="password" id="password" placeholder="Password" class="w-full p-2 border mb-4 rounded" />
-
+      <input type="email" id="email" placeholder="Email" class="w-full p-2 border mb-4 rounded"/>
+      <input type="password" id="password" placeholder="Password" class="w-full p-2 border mb-4 rounded"/>
+      <input type="text" id="name" placeholder="Name" class="w-full p-2 border mb-4 rounded hidden"/>
+      <input type="date" id="dob" class="w-full p-2 border mb-4 rounded hidden"/>
+      <select id="gender" class="w-full p-2 border mb-4 rounded hidden">
+        <option value="">Select Gender</option>
+        <option>Male</option>
+        <option>Female</option>
+        <option>Other</option>
+      </select>
       <button onclick="handleAuth()" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700" id="authButton">Login</button>
-
-      <p class="text-center mt-4 text-sm" id="toggleText">
-        Don't have an account?
-        <a href="#" onclick="toggleMode()" class="text-blue-500 underline">Register</a>
-      </p>
     </div>
   </div>
 
-  <!-- Firebase Config -->
+  <!-- Profile Section -->
+  <div id="profileSection" class="hidden max-w-2xl mx-auto p-6 bg-white shadow rounded-lg">
+    <h2 class="text-2xl font-bold mb-4">Welcome, <span id="username">User</span></h2>
+    <div class="mb-6">
+      <h3 class="text-lg font-semibold mb-2">Profile Details</h3>
+      <ul class="space-y-1 pl-4 list-disc">
+        <li><strong>Email:</strong> <span id="profileEmail"></span></li>
+        <li><strong>Name:</strong> <span id="profileName"></span></li>
+        <li><strong>Date of Birth:</strong> <span id="profileDob"></span></li>
+        <li><strong>Gender:</strong> <span id="profileGender"></span></li>
+      </ul>
+    </div>
+    <div>
+      <h3 class="text-lg font-semibold mb-2">Scorecard</h3>
+      <ul class="space-y-1 pl-4 list-disc">
+        <li>History: <span id="historyScore">N/A</span></li>
+        <li>Science: <span id="scienceScore">N/A</span></li>
+        <li>Geography: <span id="geographyScore">N/A</span></li>
+        <li>Reasoning: <span id="reasoningScore">N/A</span></li>
+        <li>Aptitude: <span id="aptitudeScore">N/A</span></li>
+      </ul>
+    </div>
+  </div>
+
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCl5Ws00zsGXEpQfTpV6Awb0lkyr363pwc",
@@ -38,16 +78,22 @@
 
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
+    const db = firebase.firestore();
 
     let isLogin = true;
 
-    function toggleMode() {
-      isLogin = !isLogin;
-      document.getElementById('formTitle').textContent = isLogin ? "Login to QuizWorld" : "Register on QuizWorld";
-      document.getElementById('authButton').textContent = isLogin ? "Login" : "Register";
-      document.getElementById('toggleText').innerHTML = isLogin
-        ? `Don't have an account? <a href="#" onclick="toggleMode()" class="text-blue-500 underline">Register</a>`
-        : `Already have an account? <a href="#" onclick="toggleMode()" class="text-blue-500 underline">Login</a>`;
+    document.getElementById('loginBtn').addEventListener('click', () => showForm(true));
+    document.getElementById('registerBtn').addEventListener('click', () => showForm(false));
+
+    function showForm(loginMode) {
+      isLogin = loginMode;
+      document.getElementById('authSection').style.display = 'flex';
+      document.getElementById('profileSection').style.display = 'none';
+      document.getElementById('formTitle').textContent = loginMode ? 'Login to QuizWorld' : 'Register on QuizWorld';
+      document.getElementById('authButton').textContent = loginMode ? 'Login' : 'Register';
+      ['name', 'dob', 'gender'].forEach(id => {
+        document.getElementById(id).classList.toggle('hidden', loginMode);
+      });
     }
 
     function handleAuth() {
@@ -58,28 +104,65 @@
         auth.signInWithEmailAndPassword(email, password)
           .then((userCredential) => {
             const user = userCredential.user;
-            localStorage.setItem('userEmail', user.email);
-            if (user.email === "thekingraj640@gmail.com") {
-              localStorage.setItem('isAdmin', 'true');
-            } else {
-              localStorage.setItem('isAdmin', 'false');
-            }
-            window.location.href = "index.html";
+            loadUserProfile(user.email);
           })
-          .catch((error) => {
-            alert("❌ Login failed: " + error.message);
-          });
+          .catch(err => alert("❌ Login Failed: " + err.message));
       } else {
+        const name = document.getElementById('name').value;
+        const dob = document.getElementById('dob').value;
+        const gender = document.getElementById('gender').value;
+
         auth.createUserWithEmailAndPassword(email, password)
-          .then(() => {
-            alert("✅ Registration successful! You can now log in.");
-            toggleMode();
+          .then((userCredential) => {
+            const user = userCredential.user;
+            return db.collection('users').doc(user.uid).set({
+              name, dob, gender, email: user.email
+            });
           })
-          .catch((error) => {
-            alert("❌ Registration failed: " + error.message);
+          .then(() => {
+            alert("✅ Registration Successful!");
+            showForm(true);
+          })
+          .catch(err => alert("❌ Registration Failed: " + err.message));
+      }
+    }
+
+    function loadUserProfile(email) {
+      document.getElementById('authSection').style.display = 'none';
+      document.getElementById('profileSection').style.display = 'block';
+      document.getElementById('loginBtn').style.display = 'none';
+      document.getElementById('registerBtn').style.display = 'none';
+      document.getElementById('logoutBtn').style.display = 'inline';
+      document.getElementById('profileEmail').textContent = email;
+      document.getElementById('username').textContent = email.split('@')[0];
+
+      const user = auth.currentUser;
+      if (user) {
+        db.collection('users').doc(user.uid).get()
+          .then(doc => {
+            if (doc.exists) {
+              const data = doc.data();
+              document.getElementById('profileName').textContent = data.name || 'Not set';
+              document.getElementById('profileDob').textContent = data.dob || 'Not set';
+              document.getElementById('profileGender').textContent = data.gender || 'Not set';
+            }
           });
       }
     }
+
+    function logout() {
+      auth.signOut().then(() => {
+        location.reload();
+      });
+    }
+
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        loadUserProfile(user.email);
+      } else {
+        showForm(true);
+      }
+    });
   </script>
 </body>
 </html>
