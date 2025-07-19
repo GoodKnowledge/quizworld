@@ -37,6 +37,16 @@
     <h3 class="text-lg font-bold mb-2">Admin Panel</h3>
     <p>You are logged in as <strong>Admin</strong>. You can add/update questions from here.</p>
     <!-- Admin controls like dropdowns, forms etc will go here -->
+	<select id="questionCategory" class="border p-2 my-2">
+        <option value="currentAffairsContent">Current Affairs</option>
+        <option value="historyContent">History</option>
+        <option value="geographyContent">Geography</option>
+        <option value="scienceContent">General Science</option>
+        <option value="aptitudeContent">Aptitude</option>
+        <option value="reasoningContent">Reasoning</option>
+      </select>
+      <input id="questionText" placeholder="Enter your question" class="border p-2 block my-2 w-full" />
+      <button onclick="addQuestionToFirestore()" class="bg-blue-600 text-white p-2 rounded">Add Question</button>
     </div>
   </section>
 
@@ -49,6 +59,49 @@
         document.getElementById('adminPanel').style.display = 'block';
       }
     };
+	
+	function addQuestionToFirestore() {
+      const categoryId = document.getElementById('questionCategory').value;
+      const question = document.getElementById('questionText').value;
+      if (!question) return;
+      db.collection("questions").add({ category: categoryId, text: question, timestamp: Date.now() })
+        .then(() => {
+          document.getElementById('questionText').value = '';
+          loadQuestions();
+        })
+        .catch(error => console.error("Error adding question: ", error));
+    }
+
+    function loadQuestions() {
+      db.collection("questions").orderBy("timestamp").get().then(snapshot => {
+        const sections = {
+          currentAffairsContent: [],
+          historyContent: [],
+          geographyContent: [],
+          scienceContent: [],
+          aptitudeContent: [],
+          reasoningContent: []
+        };
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          if (sections[data.category]) {
+            sections[data.category].push(`<p class='my-1 flex justify-between items-center'>• ${data.text} <button class='text-sm text-red-600 ml-2' onclick="deleteQuestion('${doc.id}')">Delete</button></p>`);
+          }
+        });
+        for (const id in sections) {
+          const container = document.getElementById(id);
+          container.innerHTML = sections[id].join('');
+        }
+      });
+    }
+
+    function deleteQuestion(id) {
+      db.collection("questions").doc(id).delete()
+        .then(() => {
+          loadQuestions();
+        })
+        .catch(error => console.error("Error deleting question: ", error));
+    }
   </script>
 </body>
 </html>
